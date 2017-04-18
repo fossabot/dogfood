@@ -77,10 +77,13 @@ class BaseValidator extends Schema
             return;
         }
 
+        // get definition schema object
+        $schema = $definition->getMeta('schema');
+
         // process keyword
         try {
             // validate keyword
-            if ($this->spec->keyword($keyword)) {
+            if ($schema->spec->keyword($keyword)) {
                 $handler = $this->state->getHandler($keyword);
                 // run handler, unless $document is undefined and $handler doesn't want undefined instances
                 if ($document->isDefined() || $handler->willProcessUndefined()) {
