@@ -32,7 +32,7 @@ class BaseValidator extends Schema
     public function __construct(State $state, \StdClass $schema = null, string $uri = null)
     {
         // call parent constructor
-        $specVersion = $state->getOption(Validator::OPT_SPEC_VERSION);
+        $specVersion = $state->getOption(Validator::OPT_STANDARD);
         $state->setValidator($this);
         parent::__construct($state, $uri, $schema, $specVersion ? new SchemaInfo($specVersion) : null);
     }

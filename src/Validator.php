@@ -5,6 +5,8 @@ namespace Dogfood;
 use Erayd\JsonSchemaInfo\SchemaInfo;
 
 use Dogfood\Exception\Exception;
+use Dogfood\Exception\SchemaException;
+
 use Dogfood\Internal\State;
 use Dogfood\Internal\Schema;
 use Dogfood\Internal\ValueHelper;
@@ -25,7 +27,7 @@ class Validator extends Internal\BaseValidator
 
     // Available config options
     const OPT_ALL               = 0;
-    const OPT_SPEC_VERSION      = 1;
+    const OPT_STANDARD          = 1;
     const OPT_EXCEPTIONS        = 2;
     const OPT_APPLY_DEFAULTS    = 3;
     const OPT_VALIDATE_SCHEMA   = 4;
@@ -34,7 +36,7 @@ class Validator extends Internal\BaseValidator
     /** @var array Configuration options */
     protected $options = [
         // force spec version (default will autodetect, then fallback to draft-04)
-        self::OPT_SPEC_VERSION      => null,
+        self::OPT_STANDARD          => null,
 
         // whether to throw exceptions rather than returning a false validation result
         self::OPT_EXCEPTIONS        => false,
@@ -68,6 +70,11 @@ class Validator extends Internal\BaseValidator
         }
         $state->setOption(self::OPT_ALL, $this->options);
 
+        // if both schema & uri are null, then create an empty definition
+        if (is_null($schema) && is_null($uri)) {
+            $schema = new \StdClass();
+        }
+
         // call parent constructor
         parent::__construct($state, $schema, $uri);
     }
@@ -79,13 +86,28 @@ class Validator extends Internal\BaseValidator
      *
      * @api
      *
-     * @param  mixed $document JSON document to validate
+     * @param  mixed  $document JSON document to validate
+     * @param  string $uri      URI of schema to use for validation
      * @return bool
      */
-    public function validate(&$document) : bool
+    public function validate(&$document, string $uri = null) : bool
     {
         try {
-            $this->validateInstance(new ValueHelper($this->state, $document), $this->definition);
+            // select validation schema
+            if (!is_null($uri)) {
+                // ensure fragment is present
+                $uri = implode('#', array_pad(explode('#', $uri, 2), 2, ''));
+                if (!$this->state->haveSchema($uri)) {
+                    // add missing schema
+                    $this->addSchema($uri);
+                }
+                // get definition
+                $definition = $this->state->getSchema($uri);
+            } else {
+                $definition = $this->definition;
+            }
+
+            $this->validateInstance(new ValueHelper($this->state, $document), $definition);
             return true;
         } catch (\Exception $e) {
             if ($this->state->getOption(Validator::OPT_EXCEPTIONS)) {
@@ -110,25 +132,16 @@ class Validator extends Internal\BaseValidator
      */
     public function addSchema(string $uri, \StdClass $definition = null, string $standard = null) : bool
     {
-        try {
-            // ensure fragment is present
-            $uri = implode('#', array_pad(explode('#', $uri, 2), 2, ''));
+        // ensure fragment is present
+        $uri = implode('#', array_pad(explode('#', $uri, 2), 2, ''));
 
-            // check for already-registered schema
-            if ($this->state->haveSchema($uri)) {
-                return false;
-            }
-
-            // get standard
-            if (!is_null($standard)) {
-                $standard = new SchemaInfo($standard);
-            }
-
-            // import the schema
-            new Schema($this->state, $uri, $definition, $standard);
-        } catch (\Exception $e) {
-            throw SchemaException::SCHEMA_IMPORT_ERROR($uri, $e->getMessage(), $e);
+        // check for already-registered schema
+        if ($this->state->haveSchema($uri)) {
+            return false;
         }
+
+        // import the schema
+        new Schema($this->state, $uri, $definition, $standard ? new SchemaInfo($standard) : null);
 
         return true;
     }
