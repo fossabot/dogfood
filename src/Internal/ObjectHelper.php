@@ -157,15 +157,11 @@ class ObjectHelper
         $object = new self($object, $this->options, $path);
         // inherit aliases
         if ($this->options & self::INHERIT_ALIASES) {
-            foreach ($this->propertyAlias as $alias => $aliasTarget) {
-                $object->setAlias($aliasTarget, $alias);
-            }
+            $object->propertyAlias = $this->propertyAlias;
         }
         // inherit metadata
         if ($this->options & self::INHERIT_META) {
-            foreach ($this->meta as $metaName => $value) {
-                $object->setMeta($metaName, $value);
-            }
+            $object->meta = $this->meta;
         }
 
         return $object;
