@@ -31,7 +31,8 @@ class Validator extends Internal\BaseValidator
     const OPT_EXCEPTIONS        = 2;
     const OPT_APPLY_DEFAULTS    = 3;
     const OPT_VALIDATE_SCHEMA   = 4;
-    const OPT_FETCH_PROVIDER    = 5;
+    const OPT_VALIDATE_STANDARD = 5;
+    const OPT_FETCH_PROVIDER    = 6;
 
     /** @var array Configuration options */
     protected $options = [
@@ -45,7 +46,10 @@ class Validator extends Internal\BaseValidator
         self::OPT_APPLY_DEFAULTS    => false,
 
         // whether to also validate the schema
-        self::OPT_VALIDATE_SCHEMA   => true,  // whether to also validate the schema
+        self::OPT_VALIDATE_SCHEMA   => true,
+
+        // whether to also validate the spec schema if OPT_VALIDATE_SCHEMA is enabled
+        self::OPT_VALIDATE_STANDARD => false,
 
         // callback used for fetching remote resources | function(string $uri) : string
         self::OPT_FETCH_PROVIDER    => 'file_get_contents',

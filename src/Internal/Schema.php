@@ -95,8 +95,9 @@ class Schema extends BaseInstance
         if ($this->state->getOption(Validator::OPT_VALIDATE_SCHEMA)) {
             $specURI = $this->spec->getURI();
 
-            // ...but only if *this* schema isn't the spec (spec schemas should be assumed valid)!
-            if ($this->uri != $specURI) {
+            // ...but only if *this* schema isn't the spec (spec schemas should be assumed valid)...
+            // ...unless Validator:OPT_VALIDATE_STANDARD is enabled.
+            if ($this->state->getOption(Validator::OPT_VALIDATE_STANDARD) || $this->uri != $specURI) {
                 // import spec if missing
                 if (!$this->state->haveSchema($specURI)) {
                     new self($this->state, $specURI, $this->spec->getSchema());
