@@ -109,7 +109,7 @@ class Validator extends Internal\BaseValidator
 
             $this->validateInstance(new ValueHelper($this->state, $document), $definition);
             return true;
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             if ($this->state->getOption(Validator::OPT_EXCEPTIONS)) {
                 throw $e;
             }
