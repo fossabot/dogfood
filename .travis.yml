@@ -11,15 +11,12 @@ matrix:
     allow_failures:
       - php: nightly
       - php: hhvm
-      - php: hhvm-nightly
     include:
         - php: 7.0
           env: WITH_COVERAGE=true
         - php: 7.1
         - php: nightly
         - php: hhvm
-          env: HHVM_PHP7="true"
-        - php: hhvm-nightly
           env: HHVM_PHP7="true"
 
 before_script:
