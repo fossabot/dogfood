@@ -155,6 +155,7 @@ class ObjectHelper
     private function toHelper(\StdClass $object, string $path) : self
     {
         $object = new self($object, $this->options, $path);
+
         // inherit aliases
         if ($this->options & self::INHERIT_ALIASES) {
             $object->propertyAlias = $this->propertyAlias;
