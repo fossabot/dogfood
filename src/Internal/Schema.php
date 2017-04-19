@@ -269,10 +269,11 @@ class Schema extends BaseInstance
         $ref = $definition->getProperty('$ref');
         $uri = self::resolve($base, $ref);
 
-        try {
+        // get schema definition
+        if ($this->state->haveSchema($uri)) {
             // get registered schema definition
             $definition = $this->state->getSchema($uri);
-        } catch (SchemaException $e) {
+        } else {
             // ref uri is not directly registered, so find it
             if (substr($ref, 0, 1) === '#') {
                 // $ref is a JSON pointer, so find it in the current schema

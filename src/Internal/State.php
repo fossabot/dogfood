@@ -96,8 +96,9 @@ class State
      * Get a registered schema definition
      *
      * @param string $uri
+     * @return ObjectHelper
      */
-    public function getSchema(string $uri)
+    public function getSchema(string $uri) : ObjectHelper
     {
         // throw a tantrum if the desired schema URI isn't registered
         if (!$this->haveSchema($uri)) {
