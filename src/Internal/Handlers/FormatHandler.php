@@ -37,6 +37,8 @@ class FormatHandler extends BaseHandler
             case 'ip-address':
             case 'ipv4':
             case 'ipv6':
+            case 'host-name': // PHP method names are not case-sensitive, so no alias is needed
+            case 'hostname':
             case 'regex':
                 if ($schema->getMeta('schema')->getSpec()->format($definition)) {
                     $definition = preg_replace_callback(
@@ -88,6 +90,36 @@ class FormatHandler extends BaseHandler
         if (filter_var($value, \FILTER_VALIDATE_IP, \FILTER_FLAG_IPV6) === false) {
             throw ValidationException::INVALID_IPV6($value);
         }
+    }
+
+    /**
+     * Check hostname format
+     *
+     * @param string $value
+     */
+    private function formatHostname(string $value)
+    {
+        // remove trailing period
+        if (substr($value, -1) == '.') {
+            $value = substr($value, strlen($value) - 1);
+        }
+
+        // check total length
+        if (strlen($value) > 253) {
+            throw ValidationException::HOSTNAME_TOO_LONG($value);
+        }
+
+        $nodes = explode('.', $value);
+        array_walk($nodes, function($node) use($value) {
+            // check node length
+            if (strlen($node) > 63) {
+                throw ValidationException::HOSTNAME_COMPONENT_TOO_LONG($value);
+            }
+            // check node format
+            if (!preg_match('/^(?:[a-z](?:-?[a-z0-9]+)?)?$/i', $node)) {
+                throw ValidationException::INVALID_HOSTNAME_COMPONENT($node);
+            }
+        });
     }
 
     /**

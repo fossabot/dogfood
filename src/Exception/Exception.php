@@ -56,6 +56,9 @@ abstract class Exception extends \Exception
     const INVALID_REGEX                     = 44;
     const INVALID_IPV4                      = 45;
     const INVALID_IPV6                      = 46;
+    const HOSTNAME_TOO_LONG                 = 47;
+    const HOSTNAME_COMPONENT_TOO_LONG       = 48;
+    const INVALID_HOSTNAME_COMPONENT        = 49;
 
     /**
      * Create a new Exception
@@ -201,6 +204,12 @@ abstract class Exception extends \Exception
                 return 'Not a valid IPv4 address: %s';
             case self::INVALID_IPV6:
                 return 'Not a valid IPv6 address: %s';
+            case self::HOSTNAME_TOO_LONG:
+                return 'Hostname may not be longer than 253 characters: %s';
+            case self::HOSTNAME_COMPONENT_TOO_LONG:
+                return 'Hostname component may not be longer than 63 characters: %s';
+            case self::INVALID_HOSTNAME_COMPONENT:
+                return 'Hostname component is invalid: %s';
             default:
                 throw new self(self::UNKNOWN_ERROR);
         }
