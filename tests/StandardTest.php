@@ -11,11 +11,8 @@ class StandardTest extends \PHPUnit\Framework\TestCase
 {
     const TEST_ROOT = __DIR__ . '/../vendor/json-schema-org/JSON-Schema-Test-Suite';
 
-    protected static $validator = null;
-
-    public static function setUpBeforeClass()
+    public function getValidator() : Validator
     {
-        $start = microtime(true);
         // provide remote schemas
         $remotes = [
             "http://json-schema.org/draft-03/schema" => __DIR__ . "/../dist/draft-03/schema.json",
@@ -26,7 +23,7 @@ class StandardTest extends \PHPUnit\Framework\TestCase
         ];
 
         // set up validator
-        self::$validator = new Validator(null, null, [
+        return new Validator(null, null, [
             Validator::OPT_EXCEPTIONS      => true,
             Validator::OPT_VALIDATE_SCHEMA => true,
             Validator::OPT_FETCH_PROVIDER  => function(string $uri) use(&$remotes) : string {
@@ -37,11 +34,9 @@ class StandardTest extends \PHPUnit\Framework\TestCase
                 return file_get_contents($uri);
             },
         ]);
-
-        printf("Validator setup time: %s\n", microtime(true) - $start);
     }
 
-    public function dataStandardCase()
+    public function dataStandardCase() : array
     {
         $specs = [
             SchemaInfo::SPEC_DRAFT_03 => 'draft3',
@@ -66,6 +61,8 @@ class StandardTest extends \PHPUnit\Framework\TestCase
     /** @dataProvider dataStandardCase **/
     public function testStandardCase($test, $schema, $file, $spec, $caseNo, $testNo)
     {
+        $validator = $this->getValidator();
+
         // init defaults
         $test->description = ucfirst($test->description);
         $validationResult = false;
@@ -75,10 +72,10 @@ class StandardTest extends \PHPUnit\Framework\TestCase
         try {
             // import schema
             $uri = sprintf('standard://%s.%s', realpath($file), $caseNo);
-            self::$validator->addSchema($uri, $schema, $spec);
+            $validator->addSchema($uri, $schema, $spec);
 
             // run validation
-            $validationResult = self::$validator->validate($test->data, $uri);
+            $validationResult = $validator->validate($test->data, $uri);
         } catch (\Exception $e) {
             $error = $e->getMessage();
             $where = basename($e->getFile()) . ':' . $e->getLine();
