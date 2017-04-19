@@ -40,5 +40,3 @@ class MinPropertiesHandler extends BaseHandler
         }
     }
 }
-
-

@@ -40,5 +40,3 @@ class AnyOfHandler extends BaseHandler
         throw ValidationException::ANY_OF_NO_MATCH();
     }
 }
-
-

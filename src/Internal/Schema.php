@@ -68,7 +68,8 @@ class Schema extends BaseInstance
 
         // use internal definition for spec schemas - this prevents the user from overriding a standard
         // spec definition, which prevents injection of dodgy specs when the schema input is untrusted.
-        $stdSpecName = SchemaInfo::getSpecName($uri) ?: SchemaInfo::getSpecName($this->definition->getProperty('id', ''));
+        $stdSpecName = SchemaInfo::getSpecName($uri)
+            ?: SchemaInfo::getSpecName($this->definition->getProperty('id', ''));
         if ($stdSpecName) {
             $definitionSpec = new SchemaInfo($stdSpecName);
             $this->definition = new ObjectHelper($definitionSpec->getSchema(), ObjectHelper::STICKY);

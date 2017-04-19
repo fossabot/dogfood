@@ -33,4 +33,3 @@ class AllOfHandler extends BaseHandler
         }
     }
 }
-

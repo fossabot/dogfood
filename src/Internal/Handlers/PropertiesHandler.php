@@ -43,7 +43,11 @@ class PropertiesHandler extends BaseHandler
             } elseif ($keyword == 'additionalProperties' && $schema->hasProperty('patternProperties')) {
                 return;
             } else {
-                $definition = new ObjectHelper(new \StdClass(), $schema->getOptions(), $schema->getPath() . '/properties');
+                $definition = new ObjectHelper(
+                    new \StdClass(),
+                    $schema->getOptions(),
+                    $schema->getPath() . '/properties'
+                );
             }
         }
 
@@ -67,13 +71,15 @@ class PropertiesHandler extends BaseHandler
             $schema->patternProperties->each(function ($definition, $pattern) use ($document, &$documentProperties) {
                 $pattern = '/' . str_replace('/', '\/', $pattern) . '/u';
                 // iterate properties
-                $document->each(function ($ignored, $propertyName) use ($pattern, $document, $definition, &$documentProperties) {
-                    if (preg_match($pattern, $propertyName)) {
-                        $value = ValueHelper::createForMember($this->state, $document->getValue(), $propertyName);
-                        $this->state->getValidator()->validateInstance($value, $definition);
-                        $documentProperties[$propertyName] = true;
+                $document->each(
+                    function ($ignored, $propertyName) use ($pattern, $document, $definition, &$documentProperties) {
+                        if (preg_match($pattern, $propertyName)) {
+                            $value = ValueHelper::createForMember($this->state, $document->getValue(), $propertyName);
+                            $this->state->getValidator()->validateInstance($value, $definition);
+                            $documentProperties[$propertyName] = true;
+                        }
                     }
-                });
+                );
             });
         }
 

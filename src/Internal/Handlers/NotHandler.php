@@ -39,6 +39,3 @@ class NotHandler extends BaseHandler
         throw ValidationException::MATCHED_NOT();
     }
 }
-
-
-

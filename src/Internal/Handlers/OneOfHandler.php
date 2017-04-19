@@ -47,6 +47,3 @@ class OneOfHandler extends BaseHandler
         }
     }
 }
-
-
-

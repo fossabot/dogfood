@@ -26,7 +26,7 @@ class StandardTest extends \PHPUnit\Framework\TestCase
         return new Validator(null, null, [
             Validator::OPT_EXCEPTIONS      => true,
             Validator::OPT_VALIDATE_SCHEMA => true,
-            Validator::OPT_FETCH_PROVIDER  => function(string $uri) use(&$remotes) : string {
+            Validator::OPT_FETCH_PROVIDER  => function (string $uri) use (&$remotes) : string {
                 $uri = explode('#', $uri, 2)[0];
                 if (array_key_exists($uri, $remotes)) {
                     return file_get_contents($remotes[$uri]);

@@ -41,7 +41,7 @@ class UniqueItemsHandler extends BaseHandler
         // check uniqueness
         if ($definition) {
             $seen = $seenObject = [];
-            $document->each(function(&$value) use (&$seen, &$seenObject) {
+            $document->each(function (&$value) use (&$seen, &$seenObject) {
                 if (is_object($value)) {
                     if (in_array($value, $seenObject, false)) {
                         throw ValidationException::NON_UNIQUE_ARRAY();

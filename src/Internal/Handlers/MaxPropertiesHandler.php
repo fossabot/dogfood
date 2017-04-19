@@ -40,4 +40,3 @@ class MaxPropertiesHandler extends BaseHandler
         }
     }
 }
-
