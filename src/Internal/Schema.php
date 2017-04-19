@@ -298,10 +298,12 @@ class Schema extends BaseInstance
                 // $ref points to another document, so look there
                 $parts = array_pad(explode('#', $uri, 2), 2, '');
                 $targetSchemaURI = $parts[0] . '#';
-                try {
+
+                // get target schema
+                if ($this->state->haveSchema($targetSchemaURI)) {
                     // get target schema from the state cache
                     $targetSchema = $this->state->getSchema($targetSchemaURI)->getMeta('schema');
-                } catch (SchemaException $e) {
+                } else {
                     // we don't know about this schema at all, so fetch / create it
                     $targetSchema = new self($this->state, $targetSchemaURI);
                 }
