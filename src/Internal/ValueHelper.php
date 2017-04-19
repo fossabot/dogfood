@@ -72,7 +72,14 @@ class ValueHelper extends BaseInstance
                 break;
             case 'double':
                 $types = ['number'];
-                if (floor($value) == $value) {
+                if (($value > PHP_INT_MAX || $value < PHP_INT_MIN) && floor($value) == $value) {
+                    // Integers larger than PHP's internal integer type are parsed as a double, so
+                    // add the integer type for them. Note that floating-point values with a zero
+                    // fractional component (e.g. 3.0000) are *not* integers, and should not be
+                    // treated as such. Unfortunately, there is no way to tell the difference once
+                    // the number is outside the bounds of PHP's integer type, so we just assume
+                    // that the number should be an int if the fractional component is zero or
+                    // missing, as this is the most common use-case.
                     array_unshift($types, 'integer');
                 }
                 break;
