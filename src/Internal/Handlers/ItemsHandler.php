@@ -50,7 +50,7 @@ class ItemsHandler extends BaseHandler
 
         // check additionalItems
         if ($documentCount > count($definition) && $this->shouldProcessKeyword('additionalItems', $schema)) {
-            $additionalItems = new ValueHelper($this->state, $schema->additionalItems);
+            $additionalItems = new ValueHelper($this->state, $schema->getProperty('additionalItems'));
             if ($additionalItems->isObject()) {
                 $definition = array_pad($definition, $documentCount, $additionalItems->getValue());
             } elseif ($additionalItems->isBoolean() && !$additionalItems->getValue()) {

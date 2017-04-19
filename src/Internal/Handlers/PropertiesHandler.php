@@ -83,7 +83,7 @@ class PropertiesHandler extends BaseHandler
                 return !$checked;
             });
             if (count($documentProperties)) {
-                $additionalProperties = new ValueHelper($this->state, $schema->additionalProperties);
+                $additionalProperties = new ValueHelper($this->state, $schema->getProperty('additionalProperties'));
                 if ($additionalProperties->isObject()) {
                     // validate additional properties
                     foreach ($documentProperties as $propertyName => $checked) {
