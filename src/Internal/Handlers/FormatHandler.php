@@ -39,6 +39,7 @@ class FormatHandler extends BaseHandler
             case 'ipv6':
             case 'host-name': // PHP method names are not case-sensitive, so no alias is needed
             case 'hostname':
+            case 'email':
             case 'regex':
                 if ($schema->getMeta('schema')->getSpec()->format($definition)) {
                     $definition = preg_replace_callback(
@@ -120,6 +121,19 @@ class FormatHandler extends BaseHandler
                 throw ValidationException::INVALID_HOSTNAME_COMPONENT($node);
             }
         });
+    }
+
+    /**
+     * Check email format
+     *
+     * @param string $value
+     */
+    private function formatEmail(string $value)
+    {
+        $unicode = defined('\FILTER_FLAG_EMAIL_UNICODE') ? constant('\FILTER_FLAG_EMAIL_UNICODE') : 0;
+        if (filter_var($value, \FILTER_VALIDATE_EMAIL, $unicode) === false) {
+            throw ValidationException::INVALID_EMAIL($value);
+        }
     }
 
     /**

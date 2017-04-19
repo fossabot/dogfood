@@ -59,6 +59,7 @@ abstract class Exception extends \Exception
     const HOSTNAME_TOO_LONG                 = 47;
     const HOSTNAME_COMPONENT_TOO_LONG       = 48;
     const INVALID_HOSTNAME_COMPONENT        = 49;
+    const INVALID_EMAIL                     = 50;
 
     /**
      * Create a new Exception
@@ -210,6 +211,8 @@ abstract class Exception extends \Exception
                 return 'Hostname component may not be longer than 63 characters: %s';
             case self::INVALID_HOSTNAME_COMPONENT:
                 return 'Hostname component is invalid: %s';
+            case self::INVALID_EMAIL:
+                return 'Invalid email address: %s';
             default:
                 throw new self(self::UNKNOWN_ERROR);
         }
