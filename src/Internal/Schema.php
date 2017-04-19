@@ -78,19 +78,22 @@ class Schema extends BaseInstance
         // hydrate local identifiers & discover refs
         $this->hydrate($this->definition, $this->uri);
 
-        // validate against spec schema
+        // validate against spec schema...
         if ($this->state->getOption(Validator::OPT_VALIDATE_SCHEMA)) {
             $specURI = $this->spec->getURI();
 
-            // import spec if missing
-            if (!$this->state->haveSchema($specURI)) {
-                new self($this->state, $specURI, $this->spec->getSchema());
-            }
+            // ...but only if *this* schema isn't the spec (spec schemas should be assumed valid)!
+            if ($this->uri != $specURI) {
+                // import spec if missing
+                if (!$this->state->haveSchema($specURI)) {
+                    new self($this->state, $specURI, $this->spec->getSchema());
+                }
 
-            // validate against spec schema
-            $specDefinition = $this->state->getSchema($this->spec->getURI());
-            $targetValue = new ValueHelper($this->state, $this->definition->getObject());
-            $this->state->getValidator()->validateInstance($targetValue, $specDefinition);
+                // validate against spec schema
+                $specDefinition = $this->state->getSchema($this->spec->getURI());
+                $targetValue = new ValueHelper($this->state, $this->definition->getObject());
+                $this->state->getValidator()->validateInstance($targetValue, $specDefinition);
+            }
         }
     }
 
