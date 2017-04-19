@@ -89,8 +89,8 @@ abstract class Exception extends \Exception
         } else {
             array_unshift($args, self::UNKNOWN_ERROR, $errorName);
         }
-        $class = new \ReflectionClass($className);
-        return $class->newInstanceArgs($args);
+
+        return new $className(...$args);
     }
 
     /**
