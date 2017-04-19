@@ -34,8 +34,18 @@ class FormatHandler extends BaseHandler
         }
 
         switch ($definition) {
+            case 'ip-address':
+            case 'ipv4':
+            case 'ipv6':
             case 'regex':
                 if ($schema->getMeta('schema')->getSpec()->format($definition)) {
+                    $definition = preg_replace_callback(
+                        '/-([^-]+)/',
+                        function ($matches) {
+                            return ucfirst($matches[0]);
+                        },
+                        $definition
+                    );
                     $this->{'format' . ucfirst($definition)}($document->getValue());
                 } else {
                     // TODO hook for custom format handler (official in another spec version)
@@ -43,6 +53,40 @@ class FormatHandler extends BaseHandler
                 break;
             default:
                 // TODO hook for custom format handler (unknown format)
+        }
+    }
+
+    /**
+     * Alias for formatIpv4
+     *
+     * @param string $value
+     */
+    private function formatIpAddress(string $value)
+    {
+        $this->formatIpv4($value);
+    }
+
+    /**
+     * Check IPv4 format
+     *
+     * @param string $value
+     */
+    private function formatIpv4(string $value)
+    {
+        if (filter_var($value, \FILTER_VALIDATE_IP, \FILTER_FLAG_IPV4) === false) {
+            throw ValidationException::INVALID_IPV4($value);
+        }
+    }
+
+    /**
+     * Check IPv6 format
+     *
+     * @param string $value
+     */
+    private function formatIpv6(string $value)
+    {
+        if (filter_var($value, \FILTER_VALIDATE_IP, \FILTER_FLAG_IPV6) === false) {
+            throw ValidationException::INVALID_IPV6($value);
         }
     }
 
@@ -56,7 +100,7 @@ class FormatHandler extends BaseHandler
         $pattern = ValueHelper::patternToPCRE($value);
 
         // check that the expression compiles
-        set_error_handler(function() use($value) {
+        set_error_handler(function () use ($value) {
             throw ValidationException::INVALID_REGEX($value);
             restore_error_handler();
         });
@@ -67,6 +111,5 @@ class FormatHandler extends BaseHandler
         if (preg_match('/(\(\?<(?:[^()]++|(?1))*\))/', $value)) {
             throw ValidationException::UNSUPPORTED_LOOKBEHIND($value);
         }
-
     }
 }

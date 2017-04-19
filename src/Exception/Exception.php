@@ -54,6 +54,8 @@ abstract class Exception extends \Exception
     const VALIDATOR_ALREADY_SET             = 42;
     const UNSUPPORTED_LOOKBEHIND            = 43;
     const INVALID_REGEX                     = 44;
+    const INVALID_IPV4                      = 45;
+    const INVALID_IPV6                      = 46;
 
     /**
      * Create a new Exception
@@ -195,6 +197,10 @@ abstract class Exception extends \Exception
                 return 'ECMA-262 does not support regex lookbehind: %s';
             case self::INVALID_REGEX:
                 return 'Invalid regular expression: %s';
+            case self::INVALID_IPV4:
+                return 'Not a valid IPv4 address: %s';
+            case self::INVALID_IPV6:
+                return 'Not a valid IPv6 address: %s';
             default:
                 throw new self(self::UNKNOWN_ERROR);
         }
