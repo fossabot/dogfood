@@ -34,7 +34,7 @@ class PatternHandler extends BaseHandler
         }
 
         // check regex
-        $pattern = '/' . str_replace('/', '\/', $definition) . '/u';
+        $pattern = ValueHelper::patternToPCRE($definition);
         if (!preg_match($pattern, $document->getValue())) {
             throw ValidationException::STRING_DOES_NOT_MATCH_PATTERN($definition);
         }

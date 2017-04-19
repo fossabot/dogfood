@@ -69,7 +69,7 @@ class PropertiesHandler extends BaseHandler
         if ($this->shouldProcessKeyword('patternProperties', $schema)) {
             // iterate patterns
             $schema->patternProperties->each(function ($definition, $pattern) use ($document, &$documentProperties) {
-                $pattern = '/' . str_replace('/', '\/', $pattern) . '/u';
+                $pattern = ValueHelper::patternToPCRE($pattern);
                 // iterate properties
                 $document->each(
                     function ($ignored, $propertyName) use ($pattern, $document, $definition, &$documentProperties) {

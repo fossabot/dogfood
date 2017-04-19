@@ -33,6 +33,40 @@ class FormatHandler extends BaseHandler
             return;
         }
 
-        // TODO (currently noop)
+        switch ($definition) {
+            case 'regex':
+                if ($schema->getMeta('schema')->getSpec()->format($definition)) {
+                    $this->{'format' . ucfirst($definition)}($document->getValue());
+                } else {
+                    // TODO hook for custom format handler (official in another spec version)
+                }
+                break;
+            default:
+                // TODO hook for custom format handler (unknown format)
+        }
+    }
+
+    /**
+     * Check regex format
+     *
+     * @param string $value
+     */
+    private function formatRegex(string $value)
+    {
+        $pattern = ValueHelper::patternToPCRE($value);
+
+        // check that the expression compiles
+        set_error_handler(function() use($value) {
+            throw ValidationException::INVALID_REGEX($value);
+            restore_error_handler();
+        });
+        preg_match($pattern, '');
+        restore_error_handler();
+
+        // check for lookbehind, because ECMA-262 doesn't support it
+        if (preg_match('/(\(\?<(?:[^()]++|(?1))*\))/', $value)) {
+            throw ValidationException::UNSUPPORTED_LOOKBEHIND($value);
+        }
+
     }
 }

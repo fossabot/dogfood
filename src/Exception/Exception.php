@@ -52,6 +52,8 @@ abstract class Exception extends \Exception
     const MATCHED_NOT                       = 40;
     const SCHEMA_IMPORT_ERROR               = 41;
     const VALIDATOR_ALREADY_SET             = 42;
+    const UNSUPPORTED_LOOKBEHIND            = 43;
+    const INVALID_REGEX                     = 44;
 
     /**
      * Create a new Exception
@@ -189,6 +191,10 @@ abstract class Exception extends \Exception
                 return 'Error importing schema (%s): %s';
             case self::VALIDATOR_ALREADY_SET:
                 return 'Internal validator instance is already set';
+            case self::UNSUPPORTED_LOOKBEHIND:
+                return 'ECMA-262 does not support regex lookbehind: %s';
+            case self::INVALID_REGEX:
+                return 'Invalid regular expression: %s';
             default:
                 throw new self(self::UNKNOWN_ERROR);
         }

@@ -267,4 +267,21 @@ class ValueHelper extends BaseInstance
 
         return $helper;
     }
+
+    /**
+     * Get value as a regular expression
+     *
+     * @param string $pattern
+     * @return string
+     */
+    public static function patternToPCRE(string $pattern) : string
+    {
+        // fix weird wildcard syntax
+        $pattern = str_replace('[^]', '(?:.|\s)', $pattern);
+
+        // escape delimiters & add wrapping
+        $pattern = '/' . str_replace('/', '\/', $pattern) . '/u';
+
+        return $pattern;
+    }
 }
