@@ -51,6 +51,7 @@ abstract class Exception extends \Exception
     const FEWER_PROPERTIES_THAN_MIN         = 39;
     const MATCHED_NOT                       = 40;
     const SCHEMA_IMPORT_ERROR               = 41;
+    const VALIDATOR_ALREADY_SET             = 42;
 
     /**
      * Create a new Exception
@@ -186,6 +187,8 @@ abstract class Exception extends \Exception
                 return 'Must not match "not" schema';
             case self::SCHEMA_IMPORT_ERROR:
                 return 'Error importing schema (%s): %s';
+            case self::VALIDATOR_ALREADY_SET:
+                return 'Internal validator instance is already set';
             default:
                 throw new self(self::UNKNOWN_ERROR);
         }

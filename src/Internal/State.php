@@ -171,6 +171,10 @@ class State
      */
     public function setValidator(BaseValidator $validator)
     {
+        if (isset($this->validator)) {
+            throw RuntimeException::VALIDATOR_ALREADY_SET();
+        }
+
         $this->validator = $validator;
     }
 

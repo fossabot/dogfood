@@ -62,7 +62,9 @@ class Validator extends Internal\BaseValidator
      */
     public function __construct(\StdClass $schema = null, string $uri = null, array $options = [])
     {
+        // set up state
         $state = new State();
+        $state->setValidator($this);
 
         // load user options
         foreach ($options as $option => $value) {
