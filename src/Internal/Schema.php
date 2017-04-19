@@ -62,7 +62,19 @@ class Schema extends BaseInstance
                 throw SchemaException::REF_TARGET_INVALID_TYPE(gettype($definition), $uri);
             }
         }
+
+        // wrap definition
         $this->definition = new ObjectHelper($definition, ObjectHelper::STICKY);
+
+        // use internal definition for spec schemas - this prevents the user from overriding a standard
+        // spec definition, which prevents injection of dodgy specs when the schema input is untrusted.
+        $stdSpecName = SchemaInfo::getSpecName($uri) ?: SchemaInfo::getSpecName($this->definition->getProperty('id', ''));
+        if ($stdSpecName) {
+            $definitionSpec = new SchemaInfo($stdSpecName);
+            $this->definition = new ObjectHelper($definitionSpec->getSchema(), ObjectHelper::STICKY);
+        }
+
+        // set $this as 'schema' metadata property
         $this->definition->setMeta('schema', $this);
 
         // set spec
