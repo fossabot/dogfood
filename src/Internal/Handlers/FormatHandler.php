@@ -45,7 +45,7 @@ class FormatHandler extends BaseHandler
                     $definition = preg_replace_callback(
                         '/-([^-]+)/',
                         function ($matches) {
-                            return ucfirst($matches[0]);
+                            return ucfirst($matches[1]);
                         },
                         $definition
                     );
