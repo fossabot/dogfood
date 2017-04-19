@@ -45,7 +45,7 @@ class StandardTest extends \PHPUnit\Framework\TestCase
         $tests = [];
 
         foreach ($specs as $spec => $testSuiteDirectory) {
-            foreach (glob(self::TEST_ROOT . "/tests/{$specs[$spec]}/*.json") as $file) {
+            foreach (glob(self::TEST_ROOT . "/tests/{$specs[$spec]}{/,/optional/}*.json", \GLOB_BRACE) as $file) {
                 $cases = json_decode(file_get_contents($file));
                 foreach ($cases as $caseNo => $case) {
                     foreach ($case->tests as $testNo => $test) {
