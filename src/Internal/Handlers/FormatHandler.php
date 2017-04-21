@@ -298,17 +298,15 @@ class FormatHandler extends BaseHandler
                 $validURL = filter_var('scheme://host/path' . $value, \FILTER_VALIDATE_URL, \FILTER_NULL_ON_FAILURE);
             } elseif (strlen($value)) { // relative-path reference
                 $pathParts = explode('/', $value, 2);
-                if (strpos($pathParts[0], ':') !== false) {
+                if (strpos($pathParts[0], ':') !== false || substr($pathParts[0], 0, 2) == '\\\\') {
                     $validURL = null;
                 } else {
-                    // Test suite seems to indicate that this kind of relative-path reference is not OK, even though
-                    // RFC-3986 explicitly allows it: https://tools.ietf.org/html/rfc3986#section-4.2.
-                    //$validURL = filter_var('scheme://host/' . $value, \FILTER_VALIDATE_URL, \FILTER_NULL_ON_FAILURE);
+                    $validURL = filter_var('scheme://host/' . $value, \FILTER_VALIDATE_URL, \FILTER_NULL_ON_FAILURE);
                 }
             } else {
                 $validURL = null;
             }
-            if ($validURL === null) {
+            if (is_null($validURL)) {
                 throw ValidationException::INVALID_URI($value);
             }
         }
