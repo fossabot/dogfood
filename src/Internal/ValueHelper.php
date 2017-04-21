@@ -89,7 +89,7 @@ class ValueHelper extends BaseInstance
         }
 
         // may not be resource or callable
-        if (is_resource($value) || is_callable($value)) {
+        if (is_resource($value) || $value instanceof \Closure) {
             throw ValidationException::CALLABLE_OR_RESOURCE();
         }
 

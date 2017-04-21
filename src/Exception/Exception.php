@@ -143,7 +143,7 @@ abstract class Exception extends \Exception
             case self::MISSING_HANDLER:
                 return 'No handler available for keyword: %s';
             case self::CALLABLE_OR_RESOURCE:
-                return 'JSON documents may not contain "callable" or "resource" types';
+                return 'JSON documents may not contain "closure" or "resource" types';
             case self::UNKNOWN_METHOD:
                 return 'Unknown method: %s::%s()';
             case self::TYPE_ASSERTION_FAILED:
