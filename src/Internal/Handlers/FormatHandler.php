@@ -2,6 +2,9 @@
 
 namespace Dogfood\Internal\Handlers;
 
+use Sabberworm\CSS\Parser as CSSParser;
+use Sabberworm\CSS\Settings as CSSSettings;
+
 use Dogfood\Exception\ValidationException;
 
 use Dogfood\Internal\ValueHelper;
@@ -45,6 +48,8 @@ class FormatHandler extends BaseHandler
             case 'date':
             case 'time':
             case 'color':
+            case 'style':
+            case 'uri':
                 if ($schema->getMeta('schema')->getSpec()->format($definition)) {
                     $definition = preg_replace_callback(
                         '/-([^-]+)/',
@@ -255,6 +260,57 @@ class FormatHandler extends BaseHandler
     {
         if (!is_numeric($value)) {
             throw ValidationException::INVALID_UTC_MILLISEC($value);
+        }
+    }
+
+    /**
+     * Check style format
+     *
+     * @param string $value
+     */
+    private function formatStyle(string $value)
+    {
+        $settings = CSSSettings::create()->beStrict();
+        try {
+            $parser = new CSSParser(sprintf('tag{%s}', $value), $settings);
+            $parser->parse();
+        } catch (\Throwable $e) {
+            throw ValidationException::INVALID_CSS_STYLE($value);
+        }
+    }
+
+    /**
+     * Check URI format
+     *
+     * @param string $value
+     */
+    private function formatUri(string $value)
+    {
+        if (null === filter_var($value, \FILTER_VALIDATE_URL, \FILTER_NULL_ON_FAILURE)) {
+            // FILTER_VALIDATE_URL does not conform to RFC-3986, and cannot handle relative URLs, but
+            // the json-schema spec uses RFC-3986, so need a bit of hackery to properly validate them.
+            // See https://tools.ietf.org/html/rfc3986#section-4.2 for additional information.
+            if (substr($value, 0, 2) === '//') { // network-path reference
+                $validURL = filter_var('scheme:' . $value, \FILTER_VALIDATE_URL, \FILTER_NULL_ON_FAILURE);
+            } elseif (substr($value, 0, 1) === '/') { // absolute-path reference
+                $validURL = filter_var('scheme://host' . $value, \FILTER_VALIDATE_URL, \FILTER_NULL_ON_FAILURE);
+            } elseif (substr($value, 0, 1) === '#') { // fragment-only reference
+                $validURL = filter_var('scheme://host/path' . $value, \FILTER_VALIDATE_URL, \FILTER_NULL_ON_FAILURE);
+            } elseif (strlen($value)) { // relative-path reference
+                $pathParts = explode('/', $value, 2);
+                if (strpos($pathParts[0], ':') !== false) {
+                    $validURL = null;
+                } else {
+                    // Test suite seems to indicate that this kind of relative-path reference is not OK, even though
+                    // RFC-3986 explicitly allows it: https://tools.ietf.org/html/rfc3986#section-4.2.
+                    //$validURL = filter_var('scheme://host/' . $value, \FILTER_VALIDATE_URL, \FILTER_NULL_ON_FAILURE);
+                }
+            } else {
+                $validURL = null;
+            }
+            if ($validURL === null) {
+                throw ValidationException::INVALID_URI($value);
+            }
         }
     }
 }
