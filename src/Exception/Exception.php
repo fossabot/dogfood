@@ -60,6 +60,7 @@ abstract class Exception extends \Exception
     const HOSTNAME_COMPONENT_TOO_LONG       = 48;
     const INVALID_HOSTNAME_COMPONENT        = 49;
     const INVALID_EMAIL                     = 50;
+    const INVALID_DATETIME                  = 51;
 
     /**
      * Create a new Exception
@@ -213,6 +214,8 @@ abstract class Exception extends \Exception
                 return 'Hostname component is invalid: %s';
             case self::INVALID_EMAIL:
                 return 'Invalid email address: %s';
+            case self::INVALID_DATETIME:
+                return 'Invalid date-time: %s';
             default:
                 throw new self(self::UNKNOWN_ERROR);
         }

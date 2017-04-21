@@ -41,6 +41,7 @@ class FormatHandler extends BaseHandler
             case 'hostname':
             case 'email':
             case 'regex':
+            case 'date-time':
                 if ($schema->getMeta('schema')->getSpec()->format($definition)) {
                     $definition = preg_replace_callback(
                         '/-([^-]+)/',
@@ -156,6 +157,26 @@ class FormatHandler extends BaseHandler
         // check for lookbehind, because ECMA-262 doesn't support it
         if (preg_match('/(\(\?<(?:[^()]++|(?1))*\))/', $value)) {
             throw ValidationException::UNSUPPORTED_LOOKBEHIND($value);
+        }
+    }
+
+    /**
+     * Check date-time format
+     *
+     * @param string $value
+     */
+    private function formatDateTime(string $value)
+    {
+        // check date-time format
+        $regex = '/^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]+)?(?:Z|[+-][0-9]{2}:[0-9]{2})$/i';
+        if (!preg_match($regex, $value, $matches)) {
+            throw ValidationException::INVALID_DATETIME($value);
+        }
+
+        // check data is sane
+        $format = 'Y-m-d\TH:i:s' . (isset($matches[1]) ? '.u' : '') . 'P';
+        if (!\DateTime::createFromFormat($format, $value)) {
+            throw ValidationException::INVALID_DATETIME($value);
         }
     }
 }
