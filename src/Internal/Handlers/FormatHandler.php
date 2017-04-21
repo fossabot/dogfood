@@ -245,4 +245,16 @@ class FormatHandler extends BaseHandler
             throw ValidationException::INVALID_CSS_COLOR($value);
         }
     }
+
+    /**
+     * Check utc-millisec format
+     *
+     * @param string $value
+     */
+    private function formatUtcMillisec(string $value)
+    {
+        if (!is_numeric($value)) {
+            throw ValidationException::INVALID_UTC_MILLISEC($value);
+        }
+    }
 }
