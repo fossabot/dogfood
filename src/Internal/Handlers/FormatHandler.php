@@ -36,6 +36,11 @@ class FormatHandler extends BaseHandler
             return;
         }
 
+        // the following pre-defined formats are deliberately not validated:
+        //  - phone  (format specification is vague, and only says MAY follow E.123)
+        //  - uriref (pending resolution of json-schema-spec issue #310)
+
+        // validate pre-defined formats
         switch ($definition) {
             case 'ip-address':
             case 'ipv4':
