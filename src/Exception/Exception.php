@@ -61,6 +61,8 @@ abstract class Exception extends \Exception
     const INVALID_HOSTNAME_COMPONENT        = 49;
     const INVALID_EMAIL                     = 50;
     const INVALID_DATETIME                  = 51;
+    const INVALID_DATE                      = 52;
+    const INVALID_TIME                      = 53;
 
     /**
      * Create a new Exception
@@ -216,6 +218,10 @@ abstract class Exception extends \Exception
                 return 'Invalid email address: %s';
             case self::INVALID_DATETIME:
                 return 'Invalid date-time: %s';
+            case self::INVALID_DATE:
+                return 'Invalid date: %s';
+            case self::INVALID_TIME:
+                return 'Invalid time: %s';
             default:
                 throw new self(self::UNKNOWN_ERROR);
         }

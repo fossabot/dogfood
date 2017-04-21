@@ -42,6 +42,8 @@ class FormatHandler extends BaseHandler
             case 'email':
             case 'regex':
             case 'date-time':
+            case 'date':
+            case 'time':
                 if ($schema->getMeta('schema')->getSpec()->format($definition)) {
                     $definition = preg_replace_callback(
                         '/-([^-]+)/',
@@ -175,8 +177,45 @@ class FormatHandler extends BaseHandler
 
         // check data is sane
         $format = 'Y-m-d\TH:i:s' . (isset($matches[1]) ? '.u' : '') . 'P';
-        if (!\DateTime::createFromFormat($format, $value)) {
+        if (!\DateTime::createFromFormat($format, strtoupper($value))) {
             throw ValidationException::INVALID_DATETIME($value);
         }
     }
+
+    /**
+     * Check date format
+     *
+     * @param string $value
+     */
+    private function formatDate(string $value)
+    {
+        // check date format
+        if (!preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/', $value)) {
+            throw ValidationException::INVALID_DATE($value);
+        }
+
+        // check data is sane
+        if (!\DateTime::createFromFormat('Y-m-d', $value)) {
+            throw ValidationException::INVALID_DATE($value);
+        }
+    }
+
+    /**
+     * Check time format
+     *
+     * @param string $value
+     */
+    private function formatTime(string $value)
+    {
+        // check date format
+        if (!preg_match('/^[0-9]{2}:[0-9]{2}:[0-9]{2}$/', $value)) {
+            throw ValidationException::INVALID_TIME($value);
+        }
+
+        // check data is sane
+        if (!\DateTime::createFromFormat('H:i:s', $value)) {
+            throw ValidationException::INVALID_TIME($value);
+        }
+    }
+
 }
