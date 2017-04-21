@@ -63,6 +63,7 @@ abstract class Exception extends \Exception
     const INVALID_DATETIME                  = 51;
     const INVALID_DATE                      = 52;
     const INVALID_TIME                      = 53;
+    const INVALID_CSS_COLOR                 = 54;
 
     /**
      * Create a new Exception
@@ -222,6 +223,8 @@ abstract class Exception extends \Exception
                 return 'Invalid date: %s';
             case self::INVALID_TIME:
                 return 'Invalid time: %s';
+            case self::INVALID_CSS_COLOR:
+                return 'Invalid CSS colour: %s';
             default:
                 throw new self(self::UNKNOWN_ERROR);
         }

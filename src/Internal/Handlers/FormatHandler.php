@@ -44,6 +44,7 @@ class FormatHandler extends BaseHandler
             case 'date-time':
             case 'date':
             case 'time':
+            case 'color':
                 if ($schema->getMeta('schema')->getSpec()->format($definition)) {
                     $definition = preg_replace_callback(
                         '/-([^-]+)/',
@@ -114,7 +115,7 @@ class FormatHandler extends BaseHandler
         }
 
         $nodes = explode('.', $value);
-        array_walk($nodes, function($node) use($value) {
+        array_walk($nodes, function ($node) use ($value) {
             // check node length
             if (strlen($node) > 63) {
                 throw ValidationException::HOSTNAME_COMPONENT_TOO_LONG($value);
@@ -218,4 +219,30 @@ class FormatHandler extends BaseHandler
         }
     }
 
+    /**
+     * Check CSS colour format
+     *
+     * @param string $value
+     */
+    private function formatColor(string $value)
+    {
+        $colours = ['maroon', 'red', 'orange', 'yellow', 'olive', 'purple', 'fuchsia', 'white',
+            'lime', 'green', 'navy', 'blue', 'aqua', 'teal', 'black', 'silver', 'gray'];
+
+        if (preg_match('/^#[0-9a-f]{3}$/i', $value)) {
+            // 3-digit hex | #369
+        } elseif (preg_match('/^#[0-9a-f]{6}$/i', $value)) {
+            // 6-digit hex | #336699
+        } elseif (preg_match('/^rgb\(([0-9]+),([0-9]+),([0-9]+)\)$/', preg_replace('/\s+/', '', $value), $matches)) {
+            // rgb-bracketed | rgb(51, 102, 153)
+            if ($matches[1] > 255 || $matches[2] > 255 || $matches[3] > 255) {
+                throw ValidationException::INVALID_CSS_COLOR($value);
+            }
+        } elseif (in_array(strtolower($value), $colours)) {
+            // predefined css colour name
+        } else {
+            // no idea what this is, but it's not a valid colour
+            throw ValidationException::INVALID_CSS_COLOR($value);
+        }
+    }
 }
