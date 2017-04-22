@@ -36,7 +36,7 @@ class RequiredHandler extends BaseHandler
         if (is_bool($definition) && $spec->rule('requiredBoolean') && $definition && !$document->isDefined()) {
             // v3 boolean-type required
             throw ValidationException::MISSING_REQUIRED($document->getKey());
-        } elseif ($document->isDefined() && is_array($definition)) {
+        } elseif ($document->isDefined() && $document->isObject() && is_array($definition)) {
             // v4+ array-type required
             foreach ($definition as $require) {
                 if (!$document->hasMember($require)) {
