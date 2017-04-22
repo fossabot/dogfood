@@ -250,10 +250,10 @@ class Schema extends BaseInstance
             if (is_null($keyword)) {
                 $this->hydrate($value, $base);
             } elseif ($this->spec->keyword($keyword, $constraints)) {
-                if ($constraints->objectIsSchema) {
+                if ($constraints->wantSchema) {
                     // value is a schema
                     $this->hydrate($value, $base);
-                } elseif ($constraints->childObjectIsSchema) {
+                } elseif ($constraints->childWantSchema) {
                     // value contains subschema children, so process them
                     $value->each(function ($value, $keyword) use ($base) {
                         $this->hydrateValueProcessor($value, $base);
