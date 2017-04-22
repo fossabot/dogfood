@@ -17,9 +17,6 @@ class StandardTest extends \PHPUnit\Framework\TestCase
         $remotes = [
             "http://json-schema.org/draft-03/schema" => __DIR__ . "/../dist/draft-03/schema.json",
             "http://json-schema.org/draft-04/schema" => __DIR__ . "/../dist/draft-04/schema.json",
-            'http://localhost:1234/integer.json' => self::TEST_ROOT . '/remotes/integer.json',
-            'http://localhost:1234/subSchemas.json' => self::TEST_ROOT . '/remotes/subSchemas.json',
-            'http://localhost:1234/folder/folderInteger.json' => self::TEST_ROOT . '/remotes/folder/folderInteger.json',
         ];
 
         // set up validator
@@ -30,6 +27,8 @@ class StandardTest extends \PHPUnit\Framework\TestCase
                 $uri = explode('#', $uri, 2)[0];
                 if (array_key_exists($uri, $remotes)) {
                     return file_get_contents($remotes[$uri]);
+                } elseif (preg_match('|^http://localhost:1234/(.+)$|', $uri, $matches)) {
+                    return file_get_contents(self::TEST_ROOT . "/remotes/{$matches[1]}");
                 }
                 return file_get_contents($uri);
             },
