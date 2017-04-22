@@ -392,6 +392,8 @@ class FormatHandler extends BaseHandler
                     $this->formatUri("scheme:$value"); // network-path reference
                 } elseif (substr($value, 0, 1) === '/') {
                     $this->formatUri("scheme://authority$value"); // absolute-path reference
+                } elseif (substr($value, 0, 1) === '#') {
+                    $this->formatUri("scheme://authority/path$value"); // fragment-only reference
                 } elseif (strlen($value)) {
                     $parts = explode('/', $value, 2);
                     if (strpos($parts[0], ':') !== false) {
