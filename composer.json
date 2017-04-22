@@ -8,11 +8,11 @@
         "type": "package",
         "package": {
             "name": "json-schema-org/JSON-Schema-Test-Suite",
-            "version": "1.2.0",
+            "version": "1.3.0-dev",
             "source": {
                 "url": "https://github.com/json-schema-org/JSON-Schema-Test-Suite",
                 "type": "git",
-                "reference": "1.2.0"
+                "reference": "05fdba41bd7844de1d527455e208addd50d41a01"
             }
         }
     }],
@@ -26,7 +26,7 @@
         "phpunit/phpunit": "^6.0",
         "squizlabs/php_codesniffer": "^2.7",
         "satooshi/php-coveralls": "^1.0.1",
-        "json-schema-org/JSON-Schema-Test-Suite": "1.2.0"
+        "json-schema-org/JSON-Schema-Test-Suite": "^1.3@dev"
     },
     "license": "ISC",
     "authors": [
