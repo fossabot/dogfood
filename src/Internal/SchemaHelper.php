@@ -146,7 +146,7 @@ class SchemaHelper
     }
 
     /**
-     * Convert an object into an SchemaHelper instance
+     * Convert an object into a SchemaHelper instance
      *
      * @param \StdClass $object
      * @param string $path

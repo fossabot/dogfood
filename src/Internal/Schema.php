@@ -240,7 +240,7 @@ class Schema extends BaseInstance
             return;
         }
 
-        // ensure we're dealing with an SchemaHelper
+        // ensure we're dealing with a SchemaHelper
         if (!($value instanceof SchemaHelper)) {
             return;
         }
