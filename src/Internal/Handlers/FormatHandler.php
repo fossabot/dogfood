@@ -50,6 +50,8 @@ class FormatHandler extends BaseHandler
             case 'color':
             case 'style':
             case 'uri':
+            case 'uriref':
+            case 'uri-reference':
                 if ($schema->getMeta('schema')->getSpec()->format($definition)) {
                     $definition = preg_replace_callback(
                         '/-([^-]+)/',
@@ -81,11 +83,6 @@ class FormatHandler extends BaseHandler
      */
     private function formatIpAddress(string $value)
     {
-        // only applicable to strings
-        if (!is_string($value)) {
-            return;
-        }
-
         $this->formatIpv4($value);
     }
 
@@ -361,4 +358,47 @@ class FormatHandler extends BaseHandler
             throw ValidationException::INVALID_URI($value);
         }
     }
+
+    /**
+     * Alias for formatUriReference
+     *
+     * @param string $value
+     */
+    private function formatUriRef(string $value)
+    {
+        $this->formatUriReference($value);
+    }
+
+    /**
+     * Check uri-reference format
+     *
+     * @param strin $value
+     */
+    private function formatUriReference(string $value)
+    {
+        try {
+            // check as full URI first
+            $this->formatUri($value);
+        } catch (ValidationException $e) {
+            try {
+                // check as reference
+                if (substr($value, 0, 2) === '//') {
+                    $this->formatUri("scheme:$value"); // network-path reference
+                } elseif (substr($value, 0, 1) === '/') {
+                    $this->formatUri("scheme://authority$value"); // absolute-path reference
+                } elseif (strlen($value)) {
+                    $parts = explode('/', $value, 2);
+                    if (strpos($parts[0], ':') !== false) {
+                        throw ValidationException::INVALID_URI_REF($value);
+                    }
+                    $this->formatUri("scheme://host/$value");
+                } else {
+                    throw ValidationException::INVALID_URI_REF($value);
+                }
+            } catch (\ValidationException $e) {
+                throw ValidationException::INVALID_URI_REF($value);
+            }
+        }
+    }
+
 }
