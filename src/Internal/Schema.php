@@ -66,6 +66,12 @@ class Schema extends BaseInstance
         // wrap definition
         $this->definition = new SchemaHelper($definition, SchemaHelper::STICKY);
 
+        // set spec
+        $this->spec = $spec ?: new SchemaInfo($this->definition->getProperty('$schema', self::SPEC_DEFAULT));
+        if ($this->spec->keyword('$id')) {
+            $this->definition->setAlias('$id', 'id');
+        }
+
         // use internal definition for spec schemas - this prevents the user from overriding a standard
         // spec definition, which prevents injection of dodgy specs when the schema input is untrusted.
         $stdSpecName = SchemaInfo::getSpecName($uri)
@@ -77,9 +83,6 @@ class Schema extends BaseInstance
 
         // set $this as 'schema' metadata property
         $this->definition->setMeta('schema', $this);
-
-        // set spec
-        $this->spec = $spec ?: new SchemaInfo($this->definition->getProperty('$schema', self::SPEC_DEFAULT));
 
         // set uri & register root definition
         $this->uri = implode('#', array_pad(explode('#', $uri, 2), 2, '')); // ensure fragment is present
