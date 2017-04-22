@@ -31,11 +31,6 @@ class FormatHandler extends BaseHandler
      */
     public function run(ValueHelper $document, ObjectHelper $schema, $definition, string $keyword)
     {
-        // only applicable to strings
-        if (!$document->isString()) {
-            return;
-        }
-
         // the following pre-defined formats are deliberately not validated:
         //  - phone  (format specification is vague, and only says MAY follow E.123)
         //  - uriref (pending resolution of json-schema-spec issue #310)
@@ -80,6 +75,11 @@ class FormatHandler extends BaseHandler
      */
     private function formatIpAddress(string $value)
     {
+        // only applicable to strings
+        if (!is_string($value)) {
+            return;
+        }
+
         $this->formatIpv4($value);
     }
 
@@ -90,6 +90,11 @@ class FormatHandler extends BaseHandler
      */
     private function formatIpv4(string $value)
     {
+        // only applicable to strings
+        if (!is_string($value)) {
+            return;
+        }
+
         if (filter_var($value, \FILTER_VALIDATE_IP, \FILTER_FLAG_IPV4) === false) {
             throw ValidationException::INVALID_IPV4($value);
         }
@@ -102,6 +107,11 @@ class FormatHandler extends BaseHandler
      */
     private function formatIpv6(string $value)
     {
+        // only applicable to strings
+        if (!is_string($value)) {
+            return;
+        }
+
         if (filter_var($value, \FILTER_VALIDATE_IP, \FILTER_FLAG_IPV6) === false) {
             throw ValidationException::INVALID_IPV6($value);
         }
@@ -114,6 +124,11 @@ class FormatHandler extends BaseHandler
      */
     private function formatHostname(string $value)
     {
+        // only applicable to strings
+        if (!is_string($value)) {
+            return;
+        }
+
         // remove trailing period
         if (substr($value, -1) == '.') {
             $value = substr($value, strlen($value) - 1);
@@ -144,6 +159,11 @@ class FormatHandler extends BaseHandler
      */
     private function formatEmail(string $value)
     {
+        // only applicable to strings
+        if (!is_string($value)) {
+            return;
+        }
+
         $unicode = defined('\FILTER_FLAG_EMAIL_UNICODE') ? constant('\FILTER_FLAG_EMAIL_UNICODE') : 0;
         if (filter_var($value, \FILTER_VALIDATE_EMAIL, $unicode) === false) {
             throw ValidationException::INVALID_EMAIL($value);
@@ -157,6 +177,11 @@ class FormatHandler extends BaseHandler
      */
     private function formatRegex(string $value)
     {
+        // only applicable to strings
+        if (!is_string($value)) {
+            return;
+        }
+
         $pattern = ValueHelper::patternToPCRE($value);
 
         // check that the expression compiles
@@ -180,6 +205,11 @@ class FormatHandler extends BaseHandler
      */
     private function formatDateTime(string $value)
     {
+        // only applicable to strings
+        if (!is_string($value)) {
+            return;
+        }
+
         // check date-time format
         $regex = '/^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]+)?(?:Z|[+-][0-9]{2}:[0-9]{2})$/i';
         if (!preg_match($regex, $value, $matches)) {
@@ -200,6 +230,11 @@ class FormatHandler extends BaseHandler
      */
     private function formatDate(string $value)
     {
+        // only applicable to strings
+        if (!is_string($value)) {
+            return;
+        }
+
         // check date format
         if (!preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/', $value)) {
             throw ValidationException::INVALID_DATE($value);
@@ -218,6 +253,11 @@ class FormatHandler extends BaseHandler
      */
     private function formatTime(string $value)
     {
+        // only applicable to strings
+        if (!is_string($value)) {
+            return;
+        }
+
         // check date format
         if (!preg_match('/^[0-9]{2}:[0-9]{2}:[0-9]{2}$/', $value)) {
             throw ValidationException::INVALID_TIME($value);
@@ -236,6 +276,11 @@ class FormatHandler extends BaseHandler
      */
     private function formatColor(string $value)
     {
+        // only applicable to strings
+        if (!is_string($value)) {
+            return;
+        }
+
         $colours = ['maroon', 'red', 'orange', 'yellow', 'olive', 'purple', 'fuchsia', 'white',
             'lime', 'green', 'navy', 'blue', 'aqua', 'teal', 'black', 'silver', 'gray'];
 
@@ -275,6 +320,11 @@ class FormatHandler extends BaseHandler
      */
     private function formatStyle(string $value)
     {
+        // only applicable to strings
+        if (!is_string($value)) {
+            return;
+        }
+
         $settings = CSSSettings::create()->beStrict();
         try {
             $parser = new CSSParser(sprintf('tag{%s}', $value), $settings);
@@ -291,6 +341,11 @@ class FormatHandler extends BaseHandler
      */
     private function formatUri(string $value)
     {
+        // only applicable to strings
+        if (!is_string($value)) {
+            return;
+        }
+
         if (null === filter_var($value, \FILTER_VALIDATE_URL, \FILTER_NULL_ON_FAILURE)) {
             // FILTER_VALIDATE_URL does not conform to RFC-3986, and cannot handle relative URLs, but
             // the json-schema spec uses RFC-3986, so need a bit of hackery to properly validate them.
