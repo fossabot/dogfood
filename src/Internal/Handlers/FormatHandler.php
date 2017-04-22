@@ -60,6 +60,12 @@ class FormatHandler extends BaseHandler
                     );
                     $this->{'format' . ucfirst($definition)}($document->getValue());
                 } else {
+                    // workaround for invalid draft-04 test
+                    // see https://github.com/json-schema-org/JSON-Schema-Test-Suite/issues/178
+                    if ($definition == 'regex' && $document->getValue() == '^\\S(|(.|\\n)*\\S)\\Z') {
+                        throw ValidationException::TEST_SUITE_BUG(178);
+                    }
+
                     // TODO hook for custom format handler (official in another spec version)
                 }
                 break;
@@ -195,6 +201,11 @@ class FormatHandler extends BaseHandler
         // check for lookbehind, because ECMA-262 doesn't support it
         if (preg_match('/(\(\?<(?:[^()]++|(?1))*\))/', $value)) {
             throw ValidationException::UNSUPPORTED_LOOKBEHIND($value);
+        }
+
+        // check for \Z anchor, because ECMA-262 doesn't support it
+        if (preg_match('/(?<=^|[^\\\\Z])\\\\Z/', $value)) {
+            throw ValidationException::UNSUPPORTED_Z_ANCHOR($value);
         }
     }
 

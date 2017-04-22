@@ -67,6 +67,7 @@ abstract class Exception extends \Exception
     const INVALID_CSS_STYLE                 = 55;
     const INVALID_UTC_MILLISEC              = 56;
     const INVALID_URI                       = 57;
+    const TEST_SUITE_BUG                    = 58;
 
     /**
      * Create a new Exception
@@ -234,6 +235,8 @@ abstract class Exception extends \Exception
                 return 'Invalid utc-millisec: %s';
             case self::INVALID_URI:
                 return 'Invalid URI: %s';
+            case self::TEST_SUITE_BUG:
+                return 'Bug in test suite: https://github.com/json-schema-org/JSON-Schema-Test-Suite/issues/%d';
             default:
                 throw new self(self::UNKNOWN_ERROR);
         }
