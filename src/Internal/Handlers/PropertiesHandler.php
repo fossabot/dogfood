@@ -6,7 +6,7 @@ use Dogfood\Exception\ValidationException;
 
 use Dogfood\Internal\State;
 use Dogfood\Internal\ValueHelper;
-use Dogfood\Internal\ObjectHelper;
+use Dogfood\Internal\SchemaHelper;
 use Dogfood\Internal\BaseValidator;
 
 /**
@@ -25,11 +25,11 @@ class PropertiesHandler extends BaseHandler
      * Run validation
      *
      * @param ValueHelper $document
-     * @param ObjectHelper $schema
+     * @param SchemaHelper $schema
      * @param mixed $definition
      * @param string $keyword
      */
-    public function run(ValueHelper $document, ObjectHelper $schema, $definition, string $keyword)
+    public function run(ValueHelper $document, SchemaHelper $schema, $definition, string $keyword)
     {
         // only applicable to objects
         if (!$document->isObject()) {
@@ -43,7 +43,7 @@ class PropertiesHandler extends BaseHandler
             } elseif ($keyword == 'additionalProperties' && $schema->hasProperty('patternProperties')) {
                 return;
             } else {
-                $definition = new ObjectHelper(
+                $definition = new SchemaHelper(
                     new \StdClass(),
                     $schema->getOptions(),
                     $schema->getPath() . '/properties'

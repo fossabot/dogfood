@@ -8,7 +8,7 @@ use Sabberworm\CSS\Settings as CSSSettings;
 use Dogfood\Exception\ValidationException;
 
 use Dogfood\Internal\ValueHelper;
-use Dogfood\Internal\ObjectHelper;
+use Dogfood\Internal\SchemaHelper;
 use Dogfood\Internal\BaseValidator;
 
 /**
@@ -25,11 +25,11 @@ class FormatHandler extends BaseHandler
      * Run validation
      *
      * @param ValueHelper $document
-     * @param ObjectHelper $schema
+     * @param SchemaHelper $schema
      * @param mixed $definition
      * @param string $keyword
      */
-    public function run(ValueHelper $document, ObjectHelper $schema, $definition, string $keyword)
+    public function run(ValueHelper $document, SchemaHelper $schema, $definition, string $keyword)
     {
         // the following pre-defined formats are deliberately not validated:
         //  - phone  (format specification is vague, and only says MAY follow E.123)

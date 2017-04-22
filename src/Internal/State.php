@@ -70,9 +70,9 @@ class State
      * Register a schema definition
      *
      * @param string $uri
-     * @param ObjectHelper $definition
+     * @param SchemaHelper $definition
      */
-    public function registerSchema(string $uri, ObjectHelper $definition)
+    public function registerSchema(string $uri, SchemaHelper $definition)
     {
         if ($this->haveSchema($uri)) {
             throw SchemaException::SCHEMA_REGISTER_ONCE_ONLY($uri);
@@ -96,9 +96,9 @@ class State
      * Get a registered schema definition
      *
      * @param string $uri
-     * @return ObjectHelper
+     * @return SchemaHelper
      */
-    public function getSchema(string $uri) : ObjectHelper
+    public function getSchema(string $uri) : SchemaHelper
     {
         // throw a tantrum if the desired schema URI isn't registered
         if (!$this->haveSchema($uri)) {

@@ -5,7 +5,7 @@ namespace Dogfood\Internal\Handlers;
 use Dogfood\Exception\ValidationException;
 
 use Dogfood\Internal\ValueHelper;
-use Dogfood\Internal\ObjectHelper;
+use Dogfood\Internal\SchemaHelper;
 use Dogfood\Internal\BaseValidator;
 
 /**
@@ -23,11 +23,11 @@ class MultipleOfHandler extends BaseHandler
      * Run validation
      *
      * @param ValueHelper $document
-     * @param ObjectHelper $schema
+     * @param SchemaHelper $schema
      * @param mixed $definition
      * @param string $keyword
      */
-    public function run(ValueHelper $document, ObjectHelper $schema, $definition, string $keyword)
+    public function run(ValueHelper $document, SchemaHelper $schema, $definition, string $keyword)
     {
         // only applicable to numbers
         if (!$document->isNumber()) {

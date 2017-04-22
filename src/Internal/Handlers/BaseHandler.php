@@ -4,7 +4,7 @@ namespace Dogfood\Internal\Handlers;
 
 use Dogfood\Internal\State;
 use Dogfood\Internal\ValueHelper;
-use Dogfood\Internal\ObjectHelper;
+use Dogfood\Internal\SchemaHelper;
 
 /**
  * Base handler class
@@ -47,7 +47,7 @@ abstract class BaseHandler
      * @param string $keyword
      * @return bool
      */
-    protected function shouldProcessKeyword(string $keyword, ObjectHelper $definition) : bool
+    protected function shouldProcessKeyword(string $keyword, SchemaHelper $definition) : bool
     {
         $spec = $definition->getMeta('schema')->getSpec();
         return $definition->hasProperty($keyword) && $spec->keyword($keyword);
@@ -57,9 +57,9 @@ abstract class BaseHandler
      * Run validation
      *
      * @param ValueHelper $document
-     * @param ObjectHelper $schema
+     * @param SchemaHelper $schema
      * @param mixed $definition
      * @param string $keyword
      */
-    abstract public function run(ValueHelper $document, ObjectHelper $schema, $definition, string $keyword);
+    abstract public function run(ValueHelper $document, SchemaHelper $schema, $definition, string $keyword);
 }

@@ -28,7 +28,7 @@ class Schema extends BaseInstance
     /** @var array List of ref objects and their resolution bases */
     protected $refs = [];
 
-    /** @var ObjectHelper Base definition */
+    /** @var SchemaHelper Base definition */
     protected $definition = null;
 
     /**
@@ -64,7 +64,7 @@ class Schema extends BaseInstance
         }
 
         // wrap definition
-        $this->definition = new ObjectHelper($definition, ObjectHelper::STICKY);
+        $this->definition = new SchemaHelper($definition, SchemaHelper::STICKY);
 
         // use internal definition for spec schemas - this prevents the user from overriding a standard
         // spec definition, which prevents injection of dodgy specs when the schema input is untrusted.
@@ -72,7 +72,7 @@ class Schema extends BaseInstance
             ?: SchemaInfo::getSpecName($this->definition->getProperty('id', ''));
         if ($stdSpecName) {
             $definitionSpec = new SchemaInfo($stdSpecName);
-            $this->definition = new ObjectHelper($definitionSpec->getSchema(), ObjectHelper::STICKY);
+            $this->definition = new SchemaHelper($definitionSpec->getSchema(), SchemaHelper::STICKY);
         }
 
         // set $this as 'schema' metadata property
@@ -140,9 +140,9 @@ class Schema extends BaseInstance
      * Get the schema definition at the given JSON pointer
      *
      * @param string $pointer
-     * @return ObjectHelper
+     * @return SchemaHelper
      */
-    private function getTargetDefinition(string $pointer) : ObjectHelper
+    private function getTargetDefinition(string $pointer) : SchemaHelper
     {
         $definition = $this->definition;
 
@@ -164,7 +164,7 @@ class Schema extends BaseInstance
         // step down target
         while (count($parts)) {
             $targetName = array_shift($parts);
-            if ($definition instanceof ObjectHelper && $definition->hasProperty($targetName)) {
+            if ($definition instanceof SchemaHelper && $definition->hasProperty($targetName)) {
                 $definition = $definition->$targetName;
             } elseif (is_array($definition) && array_key_exists($targetName, $definition)) {
                 $definition = $definition[$targetName];
@@ -193,10 +193,10 @@ class Schema extends BaseInstance
     /**
      * Hydrate identifiers & note reference resolution base
      *
-     * @param ObjectHelper $definition
+     * @param SchemaHelper $definition
      * @param string $base
      */
-    private function hydrate(ObjectHelper $definition, string $base)
+    private function hydrate(SchemaHelper $definition, string $base)
     {
         // update base & register identified schemas
         if ($definition->hasProperty('id')) {
@@ -240,8 +240,8 @@ class Schema extends BaseInstance
             return;
         }
 
-        // ensure we're dealing with an ObjectHelper
-        if (!($value instanceof ObjectHelper)) {
+        // ensure we're dealing with an SchemaHelper
+        if (!($value instanceof SchemaHelper)) {
             return;
         }
 
@@ -269,10 +269,10 @@ class Schema extends BaseInstance
     /**
      * Dereference $ref schemas
      *
-     * @param ObjectHelper $definition
-     * @return ObjectHelper
+     * @param SchemaHelper $definition
+     * @return SchemaHelper
      */
-    protected function dereference(ObjectHelper $definition) : ObjectHelper
+    protected function dereference(SchemaHelper $definition) : SchemaHelper
     {
         // if there is no $ref, no action needs to be taken
         if (!$definition->hasProperty('$ref')) {

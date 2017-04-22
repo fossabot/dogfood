@@ -11,9 +11,9 @@ use Dogfood\Exception\RuntimeException;
  * @copyright (c) 2017 Erayd LTD
  * @author Steve Gilberd <steve@erayd.net>
  */
-class ObjectHelper
+class SchemaHelper
 {
-    const OBJECT_TO_HELPER       = 1; // convert object properties to ObjectHelper instances on access
+    const OBJECT_TO_HELPER       = 1; // convert object properties to SchemaHelper instances on access
     const ARRAY_OBJECT_TO_HELPER = 2; // if OBJECT_TO_HELPER is enabled, also apply it to array members
     const INHERIT_ALIASES        = 2; // OBJECT_TO_HELPER inherits aliases
     const INHERIT_META           = 3; // OBJECT_TO_HELPER inherits metadata
@@ -36,7 +36,7 @@ class ObjectHelper
     protected $path = '#';
 
     /**
-     * Create a new ObjectHelper instance
+     * Create a new SchemaHelper instance
      *
      * @param \StdClass $object
      */
@@ -123,7 +123,7 @@ class ObjectHelper
             throw RuntimeException::PROPERTY_NOT_SET($propertyName);
         }
 
-        // wrap objects as ObjectHelper instances
+        // wrap objects as SchemaHelper instances
         if ($this->options & self::OBJECT_TO_HELPER) {
             if (is_array($value) && $this->options & self::ARRAY_OBJECT_TO_HELPER) {
                 $result = [];
@@ -146,7 +146,7 @@ class ObjectHelper
     }
 
     /**
-     * Convert an object into an ObjectHelper instance
+     * Convert an object into an SchemaHelper instance
      *
      * @param \StdClass $object
      * @param string $path

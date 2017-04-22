@@ -3,7 +3,7 @@
 namespace Dogfood\Internal\Handlers;
 
 use Dogfood\Internal\ValueHelper;
-use Dogfood\Internal\ObjectHelper;
+use Dogfood\Internal\SchemaHelper;
 use Dogfood\Internal\BaseValidator;
 
 /**
@@ -20,11 +20,11 @@ class ExtendsHandler extends BaseHandler
      * Run validation
      *
      * @param ValueHelper $document
-     * @param ObjectHelper $schema
+     * @param SchemaHelper $schema
      * @param mixed $definition
      * @param string $keyword
      */
-    public function run(ValueHelper $document, ObjectHelper $schema, $definition, string $keyword)
+    public function run(ValueHelper $document, SchemaHelper $schema, $definition, string $keyword)
     {
         if (!is_array($definition)) {
             $definition = [$definition];

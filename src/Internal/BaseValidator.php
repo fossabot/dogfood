@@ -40,9 +40,9 @@ class BaseValidator extends Schema
      * Run validation handlers against a document instance
      *
      * @param ValueHelper $document
-     * @param ObjectHelper $definition
+     * @param SchemaHelper $definition
      */
-    public function validateInstance(ValueHelper $document, ObjectHelper $definition)
+    public function validateInstance(ValueHelper $document, SchemaHelper $definition)
     {
         // dereference definition
         $definition = $definition->getMeta('schema')->dereference($definition);
@@ -67,9 +67,9 @@ class BaseValidator extends Schema
      *
      * @param string $keyword
      * @param ValueHelper $document
-     * @param ObjectHelper $definition
+     * @param SchemaHelper $definition
      */
-    private function runHandler(string $keyword, ValueHelper $document, ObjectHelper $definition)
+    private function runHandler(string $keyword, ValueHelper $document, SchemaHelper $definition)
     {
         // skip keywords which are handled internally already
         if (in_array($keyword, $this->internalKeywords)) {
