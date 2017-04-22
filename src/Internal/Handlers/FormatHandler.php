@@ -357,29 +357,8 @@ class FormatHandler extends BaseHandler
             return;
         }
 
-        if (null === filter_var($value, \FILTER_VALIDATE_URL, \FILTER_NULL_ON_FAILURE)) {
-            // FILTER_VALIDATE_URL does not conform to RFC-3986, and cannot handle relative URLs, but
-            // the json-schema spec uses RFC-3986, so need a bit of hackery to properly validate them.
-            // See https://tools.ietf.org/html/rfc3986#section-4.2 for additional information.
-            if (substr($value, 0, 2) === '//') { // network-path reference
-                $validURL = filter_var('scheme:' . $value, \FILTER_VALIDATE_URL, \FILTER_NULL_ON_FAILURE);
-            } elseif (substr($value, 0, 1) === '/') { // absolute-path reference
-                $validURL = filter_var('scheme://host' . $value, \FILTER_VALIDATE_URL, \FILTER_NULL_ON_FAILURE);
-            } elseif (substr($value, 0, 1) === '#') { // fragment-only reference
-                $validURL = filter_var('scheme://host/path' . $value, \FILTER_VALIDATE_URL, \FILTER_NULL_ON_FAILURE);
-            } elseif (strlen($value)) { // relative-path reference
-                $pathParts = explode('/', $value, 2);
-                if (strpos($pathParts[0], ':') !== false || substr($pathParts[0], 0, 2) == '\\\\') {
-                    $validURL = null;
-                } else {
-                    $validURL = filter_var('scheme://host/' . $value, \FILTER_VALIDATE_URL, \FILTER_NULL_ON_FAILURE);
-                }
-            } else {
-                $validURL = null;
-            }
-            if (is_null($validURL)) {
-                throw ValidationException::INVALID_URI($value);
-            }
+        if (!filter_var($value, \FILTER_VALIDATE_URL)) {
+            throw ValidationException::INVALID_URI($value);
         }
     }
 }
