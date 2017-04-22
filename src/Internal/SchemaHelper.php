@@ -169,6 +169,23 @@ class SchemaHelper
     }
 
     /**
+     * Create a child helper
+     *
+     * @param \StdClass $object
+     * @param string[] $path
+     * @return self
+     */
+    public function createChild(\StdClass $object, string ...$path) : self
+    {
+        $finalPath = $this->path;
+        foreach ($path as $pathElement) {
+            $finalPath .= '/' . strtr($pathElement, ['~' => '~0', '/' => '~1']);
+        }
+
+        return $this->toHelper($object, $finalPath);
+    }
+
+    /**
      * Set an object property
      *
      * @param string $propertyName
