@@ -100,7 +100,22 @@ class Schema extends BaseInstance
             if ($this->state->getOption(Validator::OPT_VALIDATE_STANDARD) || $this->uri != $specURI) {
                 // import spec if missing
                 if (!$this->state->haveSchema($specURI)) {
-                    new self($this->state, $specURI, $this->spec->getSchema());
+                    $specSchema = new self($this->state, $specURI, $this->spec->getSchema());
+
+                    // workaround for buggy meta-schemas (draft-03, draft-04 & draft-05)
+                    // see https://github.com/json-schema-org/JSON-Schema-Test-Suite/issues/177#issuecomment-293051367
+                    $spec = $this->spec->getURI();
+                    $buggySpecs = [
+                        'http://json-schema.org/draft-03/schema#',
+                        'http://json-schema.org/draft-04/schema#',
+                        'http://json-schema.org/draft-05/schema#'
+                    ];
+                    if (in_array($spec, $buggySpecs)) {
+                        $specSchema->definition->getObject()->properties->id->format = 'dogfood-bugfix-uri-ref';
+                    }
+                    if ($spec == 'http://json-schema.org/draft-03/schema#') {
+                        $specSchema->definition->getObject()->properties->{'$ref'}->format = 'dogfood-bugfix-uri-ref';
+                    }
                 }
 
                 // validate against spec schema

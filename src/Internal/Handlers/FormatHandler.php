@@ -72,6 +72,12 @@ class FormatHandler extends BaseHandler
                 }
                 break;
             default:
+                // workaround for buggy meta-schemas (draft-03, draft-04 & draft-05)
+                // see https://github.com/json-schema-org/JSON-Schema-Test-Suite/issues/177#issuecomment-293051367
+                if ($definition == 'dogfood-bugfix-uri-ref') {
+                    $this->formatUriReference($document->getValue());
+                }
+
                 // TODO hook for custom format handler (unknown format)
         }
     }
@@ -400,5 +406,4 @@ class FormatHandler extends BaseHandler
             }
         }
     }
-
 }
