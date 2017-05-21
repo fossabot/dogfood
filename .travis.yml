@@ -1,0 +1,32 @@
+language: php
+
+sudo: false
+
+cache:
+    directories:
+        - $HOME/.composer/cache
+
+matrix:
+    fast_finish: true
+    allow_failures:
+      - php: nightly
+      - php: hhvm
+    include:
+        - php: 7.0
+          env: WITH_COVERAGE=true
+        - php: 7.1
+        - php: nightly
+        - php: hhvm
+          env: HHVM_PHP7="true"
+
+before_script:
+    - if [[ "$WITH_COVERAGE" != "true" ]]; then phpenv config-rm xdebug.ini || true; fi
+    - if [[ "$HHVM_PHP7" == "true" ]]; then echo "hhvm.php7.all=1" >> /etc/hhvm/php.ini; fi
+    - composer selfupdate
+    - mkdir -p build/logs
+
+script:
+    - travis_retry composer install --ignore-platform-reqs --no-interaction
+    - composer style-check
+    - if [[ "$WITH_COVERAGE" == "true" ]]; then vendor/bin/phpunit -c phpunit.xml --coverage-clover build/logs/clover.xml --coverage-text; else vendor/bin/phpunit -c phpunit.xml; fi
+    - if [[ "$WITH_COVERAGE" == "true" ]]; then vendor/bin/coveralls -v; fi;

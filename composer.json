@@ -1,0 +1,58 @@
+{
+    "name": "erayd/json-validator",
+    "description": "Validates JSON documents against a schema",
+    "keywords": ["json", "schema", "json-schema", "spec", "validator", "validate"],
+    "homepage": "https://github.com/erayd/json-validator",
+    "type": "library",
+    "repositories": [{
+        "type": "package",
+        "package": {
+            "name": "json-schema-org/JSON-Schema-Test-Suite",
+            "version": "1.3.0-dev",
+            "source": {
+                "url": "https://github.com/json-schema-org/JSON-Schema-Test-Suite",
+                "type": "git",
+                "reference": "05fdba41bd7844de1d527455e208addd50d41a01"
+            }
+        }
+    }],
+    "require": {
+        "php": "^7.0.0",
+        "erayd/json-schema-info": "dev-common-base",
+        "sabre/uri": "^2.1 || ^1.2",
+        "sabberworm/php-css-parser": "^8.1",
+        "icecave/parity": "^1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6.0",
+        "squizlabs/php_codesniffer": "^2.7",
+        "satooshi/php-coveralls": "^1.0.1",
+        "json-schema-org/JSON-Schema-Test-Suite": "^1.3@dev",
+        "sami/sami": "^4.0"
+    },
+    "license": "ISC",
+    "authors": [
+        {
+            "name": "Steve Gilberd",
+            "email": "steve@erayd.net"
+        }
+    ],
+    "minimum-stability": "stable",
+    "autoload": {
+        "psr-4": {
+            "JsonValidator\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "JsonValidator\\Tests\\": "tests/Tests"
+        }
+    },
+    "scripts": {
+        "style-check": "phpcs --standard=PSR2 src && phpcs --standard=PSR2 tests",
+        "style-fix": "phpcbf --standard=PSR2 src && phpcbf --standard=PSR2 tests",
+        "test": "phpunit",
+        "coverage": "phpunit --coverage-text",
+        "build-doc": "./vendor/bin/sami.php update sami.php"
+    }
+}
