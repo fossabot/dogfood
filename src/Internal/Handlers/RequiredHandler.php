@@ -22,9 +22,6 @@ class RequiredHandler extends BaseHandler
     /** @var bool Whether to run handler for undefined values */
     protected $forUndefined = true;
 
-    /** @var string[] Which types to process */
-    protected $forTypes = ['object'];
-
     /**
      * Run validation against a document
      *
@@ -35,7 +32,7 @@ class RequiredHandler extends BaseHandler
      */
     public function run(string $keyword, ValueHelper $document, Schema $schema, $definition)
     {
-        if ($schema->getSpec()->standard('requiredIsBoolean')) {
+        if (in_array('boolean', $schema->getSpec()->validation->required->{'allow-types'})) {
             // v3 boolean required
             if ($definition->getValue() && !$document->isDefined()) {
                 $path = $document->getPath();

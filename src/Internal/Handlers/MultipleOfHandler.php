@@ -20,9 +20,6 @@ use JsonValidator\Internal\ValueHelper;
  */
 class MultipleOfHandler extends BaseHandler
 {
-    /** @var string[] Which types to process */
-    protected $forTypes = ['number'];
-
     /**
      * Run validation against a document
      *

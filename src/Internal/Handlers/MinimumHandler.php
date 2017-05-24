@@ -19,9 +19,6 @@ use JsonValidator\Internal\ValueHelper;
  */
 class MinimumHandler extends BaseHandler
 {
-    /** @var string[] Which types to process */
-    protected $forTypes = ['number'];
-
     /**
      * Run validation against a document
      *
@@ -35,7 +32,8 @@ class MinimumHandler extends BaseHandler
         $number = $document->getValue();
         $minimum = $definition->getValue();
 
-        if ($schema->hasMember('exclusiveMinimum') && !$schema->getSpec()->standard('exclusiveMinMaxIsNumber')
+        if ($schema->hasMember('exclusiveMinimum')
+            && in_array('boolean', $schema->getSpec()->validation->exclusiveMinimum->{'allow-types'})
             && $schema->getMemberValue('exclusiveMinimum') === true
         ) {
             if ($number <= $minimum) {

@@ -19,9 +19,6 @@ use JsonValidator\Internal\ValueHelper;
  */
 class DependenciesHandler extends BaseHandler
 {
-    /** @var string[] Which types to process */
-    protected $forTypes = ['object'];
-
     /**
      * Run validation against a document
      *
@@ -44,7 +41,7 @@ class DependenciesHandler extends BaseHandler
 
                 // check for simple dependencies & wrap into array
                 if (!is_array($requiredProperties)) {
-                    if (!$schema->getSpec()->standard('allowSimpleDependencies')) {
+                    if (!$schema->getSpec()->implementation->allowSimpleDependencies) {
                         throw Exception::SIMPLE_DEPENDENCIES_NOT_ALLOWED();
                     }
                     $requiredProperties = [$requiredProperties];

@@ -40,7 +40,7 @@ class DisallowHandler extends BaseHandler
                     if ($document->isType($definition->getValue())) {
                         throw Exception::INVALID_TYPE($document->getType());
                     }
-                } elseif ($schema->getSpec()->standard('allowSchemaInUnionType')) {
+                } elseif ($schema->getSpec()->implementation->allowSchemaInUnionType) {
                     // schema types
                     $typeSchema = $schema->getSub(null, $definition);
                     try {

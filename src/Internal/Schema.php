@@ -82,7 +82,7 @@ class Schema extends BaseInstance
 
         // update uri from id & register as appropriate
         if ($id = $this->getMemberValue($this->id, null)) {
-            printf("\nSet ID %s for %s\n", $id, $this->definition->getPointer());
+            //printf("\nSet ID %s for %s\n", $id, $this->definition->getPointer());
             if (substr($id, 0, 1) == '#') {
                 // fragment-only local identifier, so just add it to the local subschema cache
                 if (!preg_match('/^#[a-z][a-z0-9-_:.]*/i', $id)) {
@@ -97,15 +97,15 @@ class Schema extends BaseInstance
                     $this->state->registerSchema($idURI, $this);
                 }
             }
-            printf("\nResulting URI %s for %s\n", $this->uri, $this->definition->getPointer());
+            //printf("\nResulting URI %s for %s\n", $this->uri, $this->definition->getPointer());
         }
 
         // locate & register all identified subschemas
-        printf(
-            "\nStart hydrating @ %s\n",
-            $this->definition->getPointer(),
-            json_encode($this->getValue(), \JSON_PRETTY_PRINT|\JSON_UNESCAPED_SLASHES)
-        );
+        //printf(
+        //    "\nStart hydrating @ %s\n",
+        //    $this->definition->getPointer(),
+        //    json_encode($this->getValue(), \JSON_PRETTY_PRINT|\JSON_UNESCAPED_SLASHES)
+        //);
         $this->hydrate($this->definition, true);
     }
 
@@ -130,11 +130,11 @@ class Schema extends BaseInstance
             } else {
                 // ...and has no identifier, so iterate those of its children...
                 $definition->each(function(ValueHelper $child, $member) {
-                    if ($info = $this->spec->validation($member) ?? $this->spec->metadata($member)) {
-                        if ($info->isSchema) {
+                    if ($info = $this->spec->validation->$member ?? $this->spec->metadata->$member) {
+                        if ($info->{'as-schema'}) {
                             // ...which are schemas
                             $this->hydrate($child, true);
-                        } elseif ($info->isSchemaContainer) {
+                        } elseif ($info->{'as-container'}) {
                             // ...which are containers
                             $this->hydrate($child, false);
                         }
@@ -187,7 +187,7 @@ class Schema extends BaseInstance
         if (is_null($pointer) && $definition) {
             $pointer = $definition->getPointer();
         }
-        printf("\nGetSub @ %s\n", $pointer);
+        //printf("\nGetSub @ %s\n", $pointer);
 
         if (!array_key_exists($pointer, $this->root->subCache)) {
             $subURI = Util::clampURI($pointer, $this->getURI());
@@ -198,7 +198,7 @@ class Schema extends BaseInstance
                 $this->root
             );
         }
-        printf("\nGot old sub for %s\n", $this->root->subCache[$pointer]->uri);
+        //printf("\nGot old sub for %s\n", $this->root->subCache[$pointer]->uri);
 
         return $this->root->subCache[$pointer];
     }
@@ -211,7 +211,7 @@ class Schema extends BaseInstance
     public function validate(ValueHelper $document)
     {
         // handle boolean schemas
-        if ($this->spec->standard('allowBooleanSchema')) {
+        if ($this->spec->implementation->allowBooleanSchema) {
             $documentValue = $document->getValue();
             if ($documentValue === true) {
                 return;
@@ -222,7 +222,7 @@ class Schema extends BaseInstance
 
         // dereference schema & validate against target
         if ($this->hasMember('$ref')) {
-            printf("\nDereference %s against %s\n", $this->getMemberValue('$ref'), $this->uri);
+            //printf("\nDereference %s against %s\n", $this->getMemberValue('$ref'), $this->uri);
             $ref = $this->getMemberValue('$ref');
             if ($ref == '#') {
                 $schema = $this->root;
@@ -241,13 +241,14 @@ class Schema extends BaseInstance
         // run handlers
         $this->each(function (ValueHelper $definition, $keyword) use ($document) {
             // 'default' is a metadata keyword, so needs to be explicitly included in order for the handler to run
-            if ($this->spec->validation($keyword) || $keyword == 'default' && $this->spec->metadata($keyword)) {
+            if (($info = $this->spec->validation->$keyword) || $keyword == 'default' && ($info = $this->spec->metadata->$keyword)) {
                 $handler = $this->state->getHandler($keyword);
-                $forTypes = $handler->forTypes();
-                if ($document->isDefined() && (!count($forTypes) || $document->isTypes(...$forTypes))) {
-                    $handler->run($keyword, $document, $this, $definition);
-                } elseif (!$document->isDefined() && $handler->forUndefined()) {
-                    $handler->run($keyword, $document, $this, $definition);
+                if($document->isTypes(...$info->{'for-types'})) {
+                    if ($document->isDefined()) {
+                        $handler->run($keyword, $document, $this, $definition);
+                    } elseif (!$document->isDefined() && $handler->forUndefined()) {
+                        $handler->run($keyword, $document, $this, $definition);
+                    }
                 }
             }
         }, 'default');

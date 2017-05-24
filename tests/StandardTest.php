@@ -71,7 +71,7 @@ class StandardTest extends \PHPUnit\Framework\TestCase
         $where = 'Test outcome';
 
         try {
-            printf("\n ===== Start validation =====\n");
+            //printf("\n ===== Start validation =====\n");
             // import schema
             $uri = sprintf('standard:%s.%s.%s', realpath($file), $caseNo, $testNo);
             $validationURI = $validator->addSchema($schema, $uri, $spec);

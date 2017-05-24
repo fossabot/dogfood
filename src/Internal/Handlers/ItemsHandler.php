@@ -20,9 +20,6 @@ use JsonValidator\Internal\ValueHelper;
  */
 class ItemsHandler extends BaseHandler
 {
-    /** @var string[] Which types to process */
-    protected $forTypes = ['array'];
-
     /**
      * Run validation against a document
      *

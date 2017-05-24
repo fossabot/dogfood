@@ -232,7 +232,7 @@ class ValueHelper extends BaseInstance implements \Countable
         }
 
         // check that the type being checked for is valid
-        if (!$this->spec->type($type) && !$this->spec->standard('allowUndefinedTypes')) {
+        if (!$this->spec->type->$type && !$this->spec->implementation->allowUndefinedTypes) {
             throw Exception::INVALID_TYPE($type);
         }
 
@@ -252,7 +252,7 @@ class ValueHelper extends BaseInstance implements \Countable
                 }
                 $isFloatingInt = $this->isType('number') && floor($value) == $value;
                 if ($isFloatingInt) {
-                    if ($this->spec->standard('allowIntegerWithFractionalPart')) {
+                    if ($this->spec->implementation->allowIntegerWithFractionalPart) {
                         return true;
                     } elseif ($value > PHP_INT_MAX || $value < PHP_INT_MIN) {
                         // Integers larger than PHP's internal integer type are parsed as a double, so

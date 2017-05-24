@@ -55,7 +55,11 @@ class FormatHandler extends BaseHandler
             case 'uri':
             case 'uriref':
             case 'uri-reference':
-                if ($schema->getSpec()->format($format)) {
+                if ($info = $schema->getSpec()->format->$format) {
+                    // only run handler for applicable types
+                    if (!$document->isTypes(...$info->{'for-types'})) {
+                        return;
+                    }
                     $formatMethod = preg_replace_callback(
                         '/-([^-]+)/',
                         function ($matches) {

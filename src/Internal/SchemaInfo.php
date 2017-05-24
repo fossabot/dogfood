@@ -20,6 +20,6 @@ class SchemaInfo extends \Erayd\JsonSchemaInfo\SchemaInfo
      */
     public function getIdKeyword() : string
     {
-        return $this->core('$id') ? '$id' : 'id';
+        return $this->core->{'$id'} ? '$id' : 'id';
     }
 }

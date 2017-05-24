@@ -19,9 +19,6 @@ use JsonValidator\Internal\ValueHelper;
  */
 class MaximumHandler extends BaseHandler
 {
-    /** @var string[] Which types to process */
-    protected $forTypes = ['number'];
-
     /**
      * Run validation against a document
      *
@@ -35,7 +32,8 @@ class MaximumHandler extends BaseHandler
         $number = $document->getValue();
         $maximum = $definition->getValue();
 
-        if ($schema->hasMember('exclusiveMaximum') && !$schema->getSpec()->standard('exclusiveMinMaxIsNumber')
+        if ($schema->hasMember('exclusiveMaximum')
+            && in_array('boolean', $schema->getSpec()->validation->exclusiveMaximum->{'allow-types'})
             && $schema->getMemberValue('exclusiveMaximum') === true
         ) {
             if ($number >= $maximum) {

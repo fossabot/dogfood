@@ -15,9 +15,6 @@ use JsonValidator\Internal\ValueHelper;
  */
 abstract class BaseHandler extends BaseInstance
 {
-    /** @var string[] Which types to process */
-    protected $forTypes = [];
-
     /** @var bool Whether to run handler for undefined values */
     protected $forUndefined = false;
 
@@ -39,15 +36,5 @@ abstract class BaseHandler extends BaseInstance
     final public function forUndefined() : bool
     {
         return $this->forUndefined;
-    }
-
-    /**
-     * Get list of types this handler is for
-     *
-     * @return string[]
-     */
-    final public function forTypes() : array
-    {
-        return $this->forTypes;
     }
 }

@@ -19,9 +19,6 @@ use JsonValidator\Internal\ValueHelper;
  */
 class MaxPropertiesHandler extends BaseHandler
 {
-    /** @var string[] Which types to process */
-    protected $forTypes = ['object'];
-
     /**
      * Run validation against a document
      *
